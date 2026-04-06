@@ -1,939 +1,158 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vocabulary Test</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        h1 {
-            color: white;
-            text-align: center;
-            margin-bottom: 30px;
-            font-size: 2.5rem;
-        }
-
-        .card {
-            background: white;
-            border-radius: 16px;
-            padding: 30px;
-            margin-bottom: 20px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-        }
-
-        .hidden {
-            display: none !important;
-        }
-
-        /* Navigation */
-        .nav {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-
-        .nav-btn {
-            flex: 1;
-            padding: 12px 20px;
-            border: none;
-            border-radius: 8px;
-            background: #f0f0f0;
-            color: #333;
-            cursor: pointer;
-            font-size: 1rem;
-            transition: all 0.3s;
-        }
-
-        .nav-btn:hover {
-            background: #e0e0e0;
-        }
-
-        .nav-btn.active {
-            background: #667eea;
-            color: white;
-        }
-
-        /* Import Section */
-        .import-section {
-            text-align: center;
-        }
-
-        .drop-zone {
-            border: 3px dashed #667eea;
-            border-radius: 12px;
-            padding: 40px;
-            margin: 20px 0;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .drop-zone:hover, .drop-zone.dragover {
-            background: #f0f0ff;
-            border-color: #764ba2;
-        }
-
-        .drop-zone p {
-            color: #666;
-            margin-bottom: 10px;
-        }
-
-        .file-input {
-            display: none;
-        }
-
-        .btn {
-            padding: 12px 30px;
-            border: none;
-            border-radius: 8px;
-            background: #667eea;
-            color: white;
-            cursor: pointer;
-            font-size: 1rem;
-            transition: all 0.3s;
-            margin: 5px;
-        }
-
-        .btn:hover {
-            background: #764ba2;
-            transform: translateY(-2px);
-        }
-
-        .btn:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .btn-secondary {
-            background: #6c757d;
-        }
-
-        .btn-success {
-            background: #28a745;
-        }
-
-        .btn-danger {
-            background: #dc3545;
-        }
-
-        .btn-warning {
-            background: #ffc107;
-            color: #333;
-        }
-
-        .btn-primary {
-            background: #007bff;
-        }
-
-        /* Vocabulary List */
-        .vocab-list {
-            max-height: 400px;
-            overflow-y: auto;
-        }
-
-        .vocab-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px;
-            border-bottom: 1px solid #eee;
-            gap: 10px;
-        }
-
-        .vocab-item:last-child {
-            border-bottom: none;
-        }
-
-        .vocab-word {
-            font-weight: bold;
-            font-size: 1.1rem;
-            min-width: 120px;
-        }
-
-        .vocab-pos {
-            color: #667eea;
-            font-style: italic;
-            min-width: 80px;
-        }
-
-        .vocab-meaning {
-            color: #666;
-            flex: 1;
-            text-align: left;
-        }
-
-        .vocab-status {
-            padding: 4px 12px;
-            border-radius: 12px;
-            font-size: 0.8rem;
-        }
-
-        .vocab-status.unfamiliar {
-            background: #ffebee;
-            color: #c62828;
-        }
-
-        .vocab-status.familiar {
-            background: #e8f5e9;
-            color: #2e7d32;
-        }
-
-        .delete-btn {
-            background: #ff5252;
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 6px;
-            cursor: pointer;
-        }
-
-        .stats {
-            display: flex;
-            gap: 20px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-
-        .stat-item {
-            background: #f8f9fa;
-            padding: 15px 25px;
-            border-radius: 8px;
-            text-align: center;
-        }
-
-        .stat-number {
-            font-size: 2rem;
-            font-weight: bold;
-            color: #667eea;
-        }
-
-        .stat-label {
-            color: #666;
-            font-size: 0.9rem;
-        }
-
-        /* Test Section */
-        .test-card {
-            text-align: center;
-        }
-
-        .test-word {
-            font-size: 3rem;
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 10px;
-        }
-
-        .test-pos {
-            font-size: 1.5rem;
-            color: #667eea;
-            font-style: italic;
-            margin-bottom: 30px;
-        }
-
-        .test-buttons {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-        }
-
-        .test-btn {
-            padding: 15px 30px;
-            font-size: 1.1rem;
-            border-radius: 12px;
-            min-width: 150px;
-        }
-
-        .test-meaning {
-            font-size: 1.8rem;
-            color: #28a745;
-            margin: 20px 0;
-            padding: 20px;
-            background: #f0fdf4;
-            border-radius: 12px;
-            min-height: 60px;
-        }
-
-        .test-actions {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            margin-top: 30px;
-            flex-wrap: wrap;
-        }
-
-        .progress-bar {
-            width: 100%;
-            height: 8px;
-            background: #e0e0e0;
-            border-radius: 4px;
-            margin-bottom: 20px;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #667eea, #764ba2);
-            transition: width 0.3s;
-        }
-
-        .test-counter {
-            color: #666;
-            margin-bottom: 20px;
-        }
-
-        /* Results Section */
-        .results-summary {
-            text-align: center;
-        }
-
-        .results-score {
-            font-size: 4rem;
-            font-weight: bold;
-            color: #667eea;
-            margin: 20px 0;
-        }
-
-        .results-details {
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-            margin: 30px 0;
-            flex-wrap: wrap;
-        }
-
-        .result-stat {
-            padding: 20px 30px;
-            border-radius: 12px;
-            text-align: center;
-        }
-
-        .result-stat.correct {
-            background: #e8f5e9;
-        }
-
-        .result-stat.incorrect {
-            background: #ffebee;
-        }
-
-        .result-stat .number {
-            font-size: 2.5rem;
-            font-weight: bold;
-        }
-
-        .result-stat.correct .number {
-            color: #2e7d32;
-        }
-
-        .result-stat.incorrect .number {
-            color: #c62828;
-        }
-
-        /* Loading */
-        .loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #667eea;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-right: 10px;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* Status message */
-        .status-message {
-            padding: 15px;
-            border-radius: 8px;
-            margin: 15px 0;
-            text-align: center;
-        }
-
-        .status-message.info {
-            background: #e3f2fd;
-            color: #1565c0;
-        }
-
-        .status-message.success {
-            background: #e8f5e9;
-            color: #2e7d32;
-        }
-
-        .status-message.error {
-            background: #ffebee;
-            color: #c62828;
-        }
-
-        /* Test Mode Options */
-        .test-mode-options {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-
-        .test-mode-btn {
-            padding: 15px 25px;
-            font-size: 1.1rem;
-        }
-
-        @media (max-width: 600px) {
-            h1 {
-                font-size: 1.8rem;
-            }
-
-            .test-word {
-                font-size: 2rem;
-            }
-
-            .test-buttons {
-                flex-direction: column;
-                align-items: center;
-            }
-
-            .test-btn {
-                width: 100%;
-                max-width: 250px;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Word Test for Kids</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="container">
-        <h1>📚 Vocabulary Test</h1>
+  <div class="page-shell">
+    <header class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">Elementary English Practice</p>
+        <h1>Word Test Playground</h1>
+        <p class="hero-text">
+          Upload a one-column CSV file, start a test for a student, and review how many words they know,
+          are unsure about, or do not know.
+        </p>
+      </div>
+      <div class="hero-badge">
+        <span>Static Site</span>
+        <strong>Ready for GitHub Pages</strong>
+      </div>
+    </header>
 
-        <!-- Navigation -->
-        <div class="nav">
-            <button class="nav-btn active" onclick="showSection('vocab')">Vocabulary</button>
-            <button class="nav-btn" onclick="showSection('test')">Test</button>
-            <button class="nav-btn" onclick="showSection('results')">Results</button>
+    <main class="layout">
+      <section class="panel">
+        <div class="section-title">
+          <h2>1. Vocabulary Upload</h2>
+          <p>Upload a CSV with one column of English words.</p>
         </div>
 
-        <!-- Vocabulary Section -->
-        <div id="vocab-section" class="card">
-            <div class="import-section">
-                <h2>Import Vocabulary</h2>
-                <p>Upload a CSV file with one English word per line</p>
-                <div class="drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
-                    <p>📁 Click to select CSV file or drag & drop</p>
-                    <p><small>Example: apple, beautiful, computer</small></p>
-                    <input type="file" id="fileInput" class="file-input" accept=".csv,.txt">
-                </div>
-                <div id="importStatus"></div>
-                <button class="btn" onclick="clearAllVocabulary()">Clear All</button>
-            </div>
+        <label class="upload-card" for="csvFile">
+          <input id="csvFile" type="file" accept=".csv,text/csv">
+          <span class="upload-title">Choose CSV File</span>
+          <span class="upload-help">Example rows: <code>apple</code>, <code>banana</code>, <code>teacher</code></span>
+        </label>
 
-            <hr style="margin: 30px 0; border: none; border-top: 1px solid #eee;">
-
-            <div class="stats">
-                <div class="stat-item">
-                    <div class="stat-number" id="totalCount">0</div>
-                    <div class="stat-label">Total Words</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number" id="familiarCount">0</div>
-                    <div class="stat-label">Familiar</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number" id="unfamiliarCount">0</div>
-                    <div class="stat-label">Unfamiliar</div>
-                </div>
-            </div>
-
-            <h3>Vocabulary List</h3>
-            <div class="vocab-list" id="vocabList"></div>
+        <div class="status-grid">
+          <div class="status-box">
+            <span class="status-label">Loaded Words</span>
+            <strong id="wordCount">0</strong>
+          </div>
+          <div class="status-box">
+            <span class="status-label">Current File</span>
+            <strong id="fileName">None</strong>
+          </div>
         </div>
 
-        <!-- Test Section -->
-        <div id="test-section" class="card hidden">
-            <div id="testStart">
-                <h2 style="text-align: center; margin-bottom: 20px;">Start Test</h2>
-                <div class="test-mode-options">
-                    <button class="btn test-mode-btn" onclick="startTest('all')">
-                        📚 All Words
-                        <br><small id="allWordsCount">0 words</small>
-                    </button>
-                    <button class="btn btn-warning test-mode-btn" onclick="startTest('unfamiliar')">
-                        🎯 Unfamiliar Only
-                        <br><small id="unfamiliarWordsCount">0 words</small>
-                    </button>
-                </div>
-            </div>
-
-        <div id="testContent" class="test-card hidden">
-            <div class="progress-bar">
-                <div class="progress-fill" id="progressFill"></div>
-            </div>
-            <div class="test-counter" id="testCounter">1 / 10</div>
-            
-            <div class="test-word hidden" id="testWord">apple</div>
-            <div class="test-pos hidden" id="testPos">noun</div>
-            
-            <div class="test-buttons">
-                <button class="btn test-btn" onclick="playPronunciation()">
-                    🔊 Pronounce
-                </button>
-                <button class="btn btn-warning test-btn" id="showWordBtn" onclick="showWord()">
-                    👁️ Show Word
-                </button>
-                <button class="btn btn-success test-btn" id="showMeaningBtn" onclick="showMeaning()">
-                    📖 Show Meaning
-                </button>
-            </div>
-
-            <div class="test-meaning hidden" id="testMeaning">蘋果</div>
-
-            <div class="test-actions" id="testActions">
-                <button class="btn btn-success" id="knowBtn" onclick="markAsFamiliar()">✓ I know this</button>
-                <button class="btn btn-danger" id="dontKnowBtn" onclick="markAsUnfamiliar()">✗ Don't know</button>
-                <button class="btn btn-primary" id="nextBtn" onclick="nextWord()" disabled>➡️ Go to Next</button>
-            </div>
-
-            <div style="margin-top: 20px;">
-                <button class="btn btn-secondary" onclick="endTest()">End Test</button>
-            </div>
+        <div class="word-preview">
+          <div class="section-title compact">
+            <h3>Vocabulary Preview</h3>
+            <p>Showing the first few uploaded words.</p>
+          </div>
+          <ul id="wordPreview" class="preview-list"></ul>
         </div>
+      </section>
+
+      <section class="panel">
+        <div class="section-title">
+          <h2>2. Start a Test</h2>
+          <p>The system creates a test number automatically for each username.</p>
         </div>
 
-        <!-- Results Section -->
-        <div id="results-section" class="card hidden">
-            <div class="results-summary">
-                <h2>Test Results</h2>
-                <div class="results-score" id="scorePercent">0%</div>
-                <p>Score</p>
-                
-                <div class="results-details">
-                    <div class="result-stat correct">
-                        <div class="number" id="correctCount">0</div>
-                        <div>Correct</div>
-                    </div>
-                    <div class="result-stat incorrect">
-                        <div class="number" id="incorrectCount">0</div>
-                        <div>Incorrect</div>
-                    </div>
-                </div>
+        <form id="startForm" class="start-form">
+          <label>
+            <span>Username</span>
+            <input id="usernameInput" type="text" placeholder="Enter student name" autocomplete="off" required>
+          </label>
+          <button class="primary-btn" type="submit">Start Test</button>
+        </form>
 
-                <button class="btn" onclick="showSection('test')">Take Another Test</button>
-                <button class="btn btn-secondary" onclick="clearResults()">Clear Results</button>
-            </div>
+        <div id="testMeta" class="test-meta empty">
+          No active test yet.
         </div>
-    </div>
+      </section>
 
-    <script>
-        // Storage keys
-        const VOCAB_KEY = 'vocabulary_test_vocab';
-        const RESULTS_KEY = 'vocabulary_test_results';
+      <section class="panel test-panel">
+        <div class="section-title">
+          <h2>3. Test Area</h2>
+          <p>Use the buttons to pronounce the word, reveal the word, or show the meaning.</p>
+        </div>
 
-        // State
-        let vocabulary = [];
-        let results = [];
-        let currentTest = [];
-        let currentIndex = 0;
-        let testResults = [];
+        <div class="test-stage">
+          <div class="word-card">
+            <div class="word-progress">
+              <span id="progressText">Please upload vocabulary and start a test.</span>
+            </div>
 
-        // Initialize
-        document.addEventListener('DOMContentLoaded', () => {
-            loadVocabulary();
-            loadResults();
-            updateStats();
-            setupDragDrop();
-        });
+            <div class="info-buttons">
+              <button id="pronounceBtn" class="action-btn" type="button" disabled>Pronounce</button>
+              <button id="showWordBtn" class="action-btn" type="button" disabled>Show Word</button>
+              <button id="showMeaningBtn" class="action-btn" type="button" disabled>Show Meaning</button>
+            </div>
 
-        // Section Navigation
-        function showSection(section) {
-            document.querySelectorAll('.card').forEach(card => card.classList.add('hidden'));
-            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
-            
-            document.getElementById(`${section}-section`).classList.remove('hidden');
-            document.querySelector(`.nav-btn:nth-child(${section === 'vocab' ? 1 : section === 'test' ? 2 : 3})`).classList.add('active');
+            <div class="display-area">
+              <div class="display-box">
+                <span class="display-label">Word</span>
+                <strong id="wordDisplay">?</strong>
+              </div>
+              <div class="display-box">
+                <span class="display-label">Meaning</span>
+                <strong id="meaningDisplay">?</strong>
+              </div>
+            </div>
+          </div>
 
-            if (section === 'test') {
-                updateTestStartCounts();
-            }
-            if (section === 'results') {
-                updateResultsDisplay();
-            }
-        }
+          <div class="answer-card">
+            <div class="section-title compact">
+              <h3>4. Answer Area</h3>
+              <p>Choose the student response for the current word.</p>
+            </div>
 
-        // File Import
-        function setupDragDrop() {
-            const dropZone = document.getElementById('dropZone');
-            const fileInput = document.getElementById('fileInput');
+            <div class="answer-buttons">
+              <button class="answer-btn know" type="button" data-answer="know" disabled>I know it</button>
+              <button class="answer-btn unsure" type="button" data-answer="not_sure" disabled>Not sure</button>
+              <button class="answer-btn dont-know" type="button" data-answer="dont_know" disabled>I don't know</button>
+            </div>
 
-            dropZone.addEventListener('dragover', (e) => {
-                e.preventDefault();
-                dropZone.classList.add('dragover');
-            });
+            <div id="liveSummary" class="live-summary">
+              <div><span>Know</span><strong id="knowCount">0</strong></div>
+              <div><span>Not Sure</span><strong id="notSureCount">0</strong></div>
+              <div><span>Don't Know</span><strong id="dontKnowCount">0</strong></div>
+            </div>
+          </div>
+        </div>
+      </section>
 
-            dropZone.addEventListener('dragleave', () => {
-                dropZone.classList.remove('dragover');
-            });
+      <section class="panel">
+        <div class="section-title">
+          <h2>5. Review Test Records</h2>
+          <p>Each test is stored by username and incremental test number in this browser.</p>
+        </div>
+        <div id="historyList" class="history-list"></div>
+      </section>
+    </main>
+  </div>
 
-            dropZone.addEventListener('drop', (e) => {
-                e.preventDefault();
-                dropZone.classList.remove('dragover');
-                const file = e.dataTransfer.files[0];
-                if (file) processFile(file);
-            });
+  <template id="historyTemplate">
+    <article class="history-card">
+      <div class="history-head">
+        <div>
+          <h3 class="history-title"></h3>
+          <p class="history-subtitle"></p>
+        </div>
+        <button class="toggle-btn" type="button">Show Details</button>
+      </div>
+      <div class="history-stats"></div>
+      <div class="history-details hidden"></div>
+    </article>
+  </template>
 
-            fileInput.addEventListener('change', (e) => {
-                const file = e.target.files[0];
-                if (file) processFile(file);
-            });
-        }
-
-        function processFile(file) {
-            const reader = new FileReader();
-            reader.onload = async (e) => {
-                const words = e.target.result.split('\n')
-                    .map(w => w.trim())
-                    .filter(w => w.length > 0);
-                
-                await importVocabulary(words);
-            };
-            reader.readAsText(file);
-        }
-
-        async function importVocabulary(words) {
-            const status = document.getElementById('importStatus');
-            status.innerHTML = '<div class="status-message info"><span class="loading"></span>Importing vocabulary...</div>';
-            
-            let imported = 0;
-            let skipped = 0;
-
-            for (const word of words) {
-                const cleanWord = word.toLowerCase().trim();
-                if (!cleanWord) continue;
-                
-                // Check if already exists
-                if (vocabulary.some(v => v.word.toLowerCase() === cleanWord)) {
-                    skipped++;
-                    continue;
-                }
-
-                try {
-                    const data = await fetchWordData(cleanWord);
-                    vocabulary.push({
-                        word: cleanWord,
-                        pos: data.pos || 'unknown',
-                        meaning: data.meaning || 'No definition found',
-                        familiar: false
-                    });
-                    imported++;
-                } catch (err) {
-                    // Add with default values if fetch fails
-                    vocabulary.push({
-                        word: cleanWord,
-                        pos: 'unknown',
-                        meaning: 'Definition not available',
-                        familiar: false
-                    });
-                    imported++;
-                }
-            }
-
-            saveVocabulary();
-            updateStats();
-            renderVocabularyList();
-            
-            status.innerHTML = `<div class="status-message success">✓ Imported ${imported} words${skipped > 0 ? `, ${skipped} skipped (already exist)` : ''}</div>`;
-            setTimeout(() => status.innerHTML = '', 3000);
-        }
-
-        async function fetchWordData(word) {
-            try {
-                const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`);
-                if (!response.ok) throw new Error('Not found');
-                
-                const data = await response.json();
-                if (Array.isArray(data) && data.length > 0) {
-                    const entry = data[0];
-                    const pos = entry.pos || entry.meanings?.[0]?.partOfSpeech || 'unknown';
-                    const meaning = entry.meanings?.[0]?.definitions?.[0]?.definition || 'No definition available';
-                    
-                    // Get Chinese meaning using translation API
-                    let chineseMeaning = '';
-                    try {
-                        const transResponse = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(word)}&langpair=en|zh-TW`);
-                        const transData = await transResponse.json();
-                        chineseMeaning = transData.responseData?.translatedText || '';
-                    } catch (e) {
-                        chineseMeaning = '';
-                    }
-                    
-                    return {
-                        pos: pos,
-                        meaning: chineseMeaning || meaning
-                    };
-                }
-            } catch (e) {
-                console.log(`Could not fetch ${word}:`, e);
-            }
-            return { pos: 'unknown', meaning: 'Definition not available' };
-        }
-
-        // Vocabulary Management
-        function loadVocabulary() {
-            const stored = localStorage.getItem(VOCAB_KEY);
-            if (stored) {
-                vocabulary = JSON.parse(stored);
-            }
-            renderVocabularyList();
-        }
-
-        function saveVocabulary() {
-            localStorage.setItem(VOCAB_KEY, JSON.stringify(vocabulary));
-        }
-
-        function clearAllVocabulary() {
-            if (confirm('Are you sure you want to delete all vocabulary?')) {
-                vocabulary = [];
-                saveVocabulary();
-                updateStats();
-                renderVocabularyList();
-            }
-        }
-
-        function deleteWord(index) {
-            vocabulary.splice(index, 1);
-            saveVocabulary();
-            updateStats();
-            renderVocabularyList();
-        }
-
-        function renderVocabularyList() {
-            const container = document.getElementById('vocabList');
-            if (vocabulary.length === 0) {
-                container.innerHTML = '<p style="text-align: center; color: #999;">No vocabulary yet. Import a CSV file to get started.</p>';
-                return;
-            }
-
-            container.innerHTML = vocabulary.map((v, i) => `
-                <div class="vocab-item">
-                    <span class="vocab-word">${v.word}</span>
-                    <span class="vocab-pos">${v.pos}</span>
-                    <span class="vocab-meaning">${v.meaning}</span>
-                    <span class="vocab-status ${v.familiar ? 'familiar' : 'unfamiliar'}">
-                        ${v.familiar ? '✓ Familiar' : '✗ Unfamiliar'}
-                    </span>
-                    <button class="delete-btn" onclick="deleteWord(${i})">Delete</button>
-                </div>
-            `).join('');
-        }
-
-        function updateStats() {
-            document.getElementById('totalCount').textContent = vocabulary.length;
-            document.getElementById('familiarCount').textContent = vocabulary.filter(v => v.familiar).length;
-            document.getElementById('unfamiliarCount').textContent = vocabulary.filter(v => !v.familiar).length;
-        }
-
-        // Test Functions
-        function updateTestStartCounts() {
-            document.getElementById('allWordsCount').textContent = `${vocabulary.length} words`;
-            document.getElementById('unfamiliarWordsCount').textContent = `${vocabulary.filter(v => !v.familiar).length} words`;
-        }
-
-        function startTest(mode) {
-            if (vocabulary.length === 0) {
-                alert('Please import vocabulary first!');
-                return;
-            }
-
-            if (mode === 'unfamiliar') {
-                currentTest = vocabulary.filter(v => !v.familiar);
-                if (currentTest.length === 0) {
-                    alert('No unfamiliar words. All words are marked as familiar!');
-                    return;
-                }
-            } else {
-                currentTest = [...vocabulary];
-            }
-
-            // Shuffle
-            currentTest = shuffleArray(currentTest);
-            currentIndex = 0;
-            testResults = [];
-
-            document.getElementById('testStart').classList.add('hidden');
-            document.getElementById('testContent').classList.remove('hidden');
-
-            showCurrentWord();
-        }
-
-        function shuffleArray(array) {
-            const arr = [...array];
-            for (let i = arr.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [arr[i], arr[j]] = [arr[j], arr[i]];
-            }
-            return arr;
-        }
-
-        function showCurrentWord() {
-            const word = currentTest[currentIndex];
-            document.getElementById('testWord').textContent = word.word;
-            document.getElementById('testPos').textContent = word.pos;
-            document.getElementById('testMeaning').textContent = word.meaning;
-            
-            // Reset display states
-            document.getElementById('testWord').classList.add('hidden');
-            document.getElementById('testPos').classList.add('hidden');
-            document.getElementById('testMeaning').classList.add('hidden');
-            
-            // Reset button states
-            document.getElementById('showWordBtn').classList.remove('hidden');
-            document.getElementById('showMeaningBtn').classList.remove('hidden');
-            
-            // Show answer buttons always
-            document.getElementById('testActions').classList.remove('hidden');
-            
-            // Disable next button until user answers
-            document.getElementById('nextBtn').disabled = true;
-
-            const progress = ((currentIndex) / currentTest.length) * 100;
-            document.getElementById('progressFill').style.width = `${progress}%`;
-            document.getElementById('testCounter').textContent = `${currentIndex + 1} / ${currentTest.length}`;
-        }
-
-        function playPronunciation() {
-            const word = currentTest[currentIndex].word;
-            const utterance = new SpeechSynthesisUtterance(word);
-            utterance.lang = 'en-US';
-            utterance.rate = 0.8;
-            speechSynthesis.speak(utterance);
-            // Show answer buttons after clicking Pronounce
-            document.getElementById('testActions').classList.remove('hidden');
-        }
-
-        function showWord() {
-            // Show English word and part of speech
-            document.getElementById('testWord').classList.remove('hidden');
-            document.getElementById('testPos').classList.remove('hidden');
-            // Hide Show Word button
-            document.getElementById('showWordBtn').classList.add('hidden');
-            // Show answer buttons
-            document.getElementById('testActions').classList.remove('hidden');
-        }
-
-        function showMeaning() {
-            document.getElementById('testMeaning').classList.remove('hidden');
-        }
-
-        function markAsFamiliar() {
-            testResults.push({ word: currentTest[currentIndex].word, correct: true });
-            // Enable next button
-            document.getElementById('nextBtn').disabled = false;
-        }
-
-        function markAsUnfamiliar() {
-            testResults.push({ word: currentTest[currentIndex].word, correct: false });
-            // Mark as unfamiliar in vocabulary
-            const vocabWord = vocabulary.find(v => v.word === currentTest[currentIndex].word);
-            if (vocabWord) vocabWord.familiar = false;
-            saveVocabulary();
-            updateStats();
-            // Enable next button
-            document.getElementById('nextBtn').disabled = false;
-        }
-
-        function nextWord() {
-            currentIndex++;
-            if (currentIndex >= currentTest.length) {
-                finishTest();
-            } else {
-                showCurrentWord();
-            }
-        }
-
-        function endTest() {
-            if (confirm('End test early?')) {
-                finishTest();
-            }
-        }
-
-        function finishTest() {
-            // Save results
-            const correct = testResults.filter(r => r.correct).length;
-            const incorrect = testResults.filter(r => !r.correct).length;
-            
-            results.push({
-                date: new Date().toISOString(),
-                total: testResults.length,
-                correct,
-                incorrect,
-                percentage: testResults.length > 0 ? Math.round((correct / testResults.length) * 100) : 0
-            });
-
-            saveResults();
-
-            document.getElementById('testContent').classList.add('hidden');
-            showSection('results');
-        }
-
-        // Results Functions
-        function loadResults() {
-            const stored = localStorage.getItem(RESULTS_KEY);
-            if (stored) {
-                results = JSON.parse(stored);
-            }
-        }
-
-        function saveResults() {
-            localStorage.setItem(RESULTS_KEY, JSON.stringify(results));
-        }
-
-        function clearResults() {
-            if (confirm('Clear all test results?')) {
-                results = [];
-                saveResults();
-                updateResultsDisplay();
-            }
-        }
-
-        function updateResultsDisplay() {
-            if (results.length === 0) {
-                document.getElementById('scorePercent').textContent = '0%';
-                document.getElementById('correctCount').textContent = '0';
-                document.getElementById('incorrectCount').textContent = '0';
-                return;
-            }
-
-            // Calculate average
-            const totalTests = results.length;
-            const avgCorrect = Math.round(results.reduce((sum, r) => sum + r.correct, 0) / totalTests);
-            const avgIncorrect = Math.round(results.reduce((sum, r) => sum + r.incorrect, 0) / totalTests);
-            const avgPercent = Math.round(results.reduce((sum, r) => sum + r.percentage, 0) / totalTests);
-
-            document.getElementById('scorePercent').textContent = `${avgPercent}%`;
-            document.getElementById('correctCount').textContent = avgCorrect;
-            document.getElementById('incorrectCount').textContent = avgIncorrect;
-        }
-    </script>
+  <script src="app.js"></script>
 </body>
 </html>
