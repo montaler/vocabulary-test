@@ -4,11 +4,14 @@ This is a static website for elementary school English word tests. It works with
 
 ## Features
 
-- Upload a CSV file with one column of English words
+- Create multiple named word pools such as `Test 1` and `Test 2`
+- Upload a separate CSV file for each pool
 - Enter a username and automatically create test IDs like `username-1`, `username-2`, `username-3`
 - Pronounce each word using the browser speech engine
 - Show the word and fetch a simple English meaning
 - Record answers as `I know it`, `Not sure`, and `I don't know`
+- Restart a full pool or retest only missed and unsure words from an earlier test
+- Use keyboard shortcuts for faster testing, including iPad with a hardware keyboard
 - Review previous test records in the browser
 
 ## Important note
@@ -29,6 +32,24 @@ banana
 teacher
 computer
 ```
+
+You can also include a first-row header:
+
+```csv
+word
+apple
+banana
+teacher
+```
+
+## Keyboard shortcuts
+
+- `P` pronounce the current word
+- `W` show the current word
+- `M` show the meaning
+- `1` answer `I know it`
+- `2` answer `Not sure`
+- `3` answer `I don't know`
 
 ## Deploy to GitHub Pages
 
