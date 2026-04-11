@@ -16,8 +16,7 @@
         <p class="eyebrow">Elementary English Practice</p>
         <h1>Word Test Playground</h1>
         <p class="hero-text">
-          Upload a one-column CSV file, start a test for a student, and review how many words they know,
-          are unsure about, or do not know.
+          Build different test pools, start full tests or missed-word retests, and use touch or keyboard on iPad.
         </p>
       </div>
       <div class="hero-badge">
@@ -29,40 +28,47 @@
     <main class="layout">
       <section class="panel">
         <div class="section-title">
-          <h2>1. Vocabulary Upload</h2>
-          <p>Upload a CSV with one column of English words.</p>
+          <h2>1. Create Test Pools</h2>
+          <p>Each pool has a name like Test 1 or Test 2 and its own CSV word list.</p>
         </div>
 
-        <label class="upload-card" for="csvFile">
-          <input id="csvFile" type="file" accept=".csv,text/csv">
-          <span class="upload-title">Choose CSV File</span>
-          <span class="upload-help">Example rows: <code>apple</code>, <code>banana</code>, <code>teacher</code></span>
-        </label>
+        <form id="poolForm" class="pool-form">
+          <label>
+            <span>Pool Name</span>
+            <input id="poolNameInput" type="text" placeholder="Example: Test 1" autocomplete="off" required>
+          </label>
+          <label class="upload-card" for="csvFile">
+            <input id="csvFile" type="file" accept=".csv,text/csv" required>
+            <span class="upload-title">Choose CSV File</span>
+            <span class="upload-help">One word per row. Optional header: <code>word</code></span>
+          </label>
+          <button class="primary-btn" type="submit">Save Pool</button>
+        </form>
 
         <div class="status-grid">
           <div class="status-box">
-            <span class="status-label">Loaded Words</span>
-            <strong id="wordCount">0</strong>
+            <span class="status-label">Test Pools</span>
+            <strong id="poolCount">0</strong>
           </div>
           <div class="status-box">
-            <span class="status-label">Current File</span>
+            <span class="status-label">Latest File</span>
             <strong id="fileName">None</strong>
           </div>
         </div>
 
         <div class="word-preview">
           <div class="section-title compact">
-            <h3>Vocabulary Preview</h3>
-            <p>Showing the first few uploaded words.</p>
+            <h3>Saved Pools</h3>
+            <p>Choose a pool before starting a test.</p>
           </div>
-          <ul id="wordPreview" class="preview-list"></ul>
+          <div id="poolList" class="pool-list"></div>
         </div>
       </section>
 
       <section class="panel">
         <div class="section-title">
           <h2>2. Start a Test</h2>
-          <p>The system creates a test number automatically for each username.</p>
+          <p>Test numbers increase by username, no matter which pool the student joins.</p>
         </div>
 
         <form id="startForm" class="start-form">
@@ -70,7 +76,11 @@
             <span>Username</span>
             <input id="usernameInput" type="text" placeholder="Enter student name" autocomplete="off" required>
           </label>
-          <button class="primary-btn" type="submit">Start Test</button>
+          <label>
+            <span>Word Pool</span>
+            <select id="poolSelect" required></select>
+          </label>
+          <button class="primary-btn" type="submit">Start Full Pool Test</button>
         </form>
 
         <div id="testMeta" class="test-meta empty">
@@ -81,19 +91,19 @@
       <section class="panel test-panel">
         <div class="section-title">
           <h2>3. Test Area</h2>
-          <p>Use the buttons to pronounce the word, reveal the word, or show the meaning.</p>
+          <p>Buttons work by touch, and keyboard shortcuts work with iPad hardware keyboards.</p>
         </div>
 
         <div class="test-stage">
           <div class="word-card">
             <div class="word-progress">
-              <span id="progressText">Please upload vocabulary and start a test.</span>
+              <span id="progressText">Create a pool and start a test.</span>
             </div>
 
             <div class="info-buttons">
-              <button id="pronounceBtn" class="action-btn" type="button" disabled>Pronounce</button>
-              <button id="showWordBtn" class="action-btn" type="button" disabled>Show Word</button>
-              <button id="showMeaningBtn" class="action-btn" type="button" disabled>Show Meaning</button>
+              <button id="pronounceBtn" class="action-btn" type="button" disabled>Pronounce <kbd>P</kbd></button>
+              <button id="showWordBtn" class="action-btn" type="button" disabled>Show Word <kbd>W</kbd></button>
+              <button id="showMeaningBtn" class="action-btn" type="button" disabled>Show Meaning <kbd>M</kbd></button>
             </div>
 
             <div class="display-area">
@@ -102,8 +112,16 @@
                 <strong id="wordDisplay">?</strong>
               </div>
               <div class="display-box">
+                <span class="display-label">Part of Speech</span>
+                <strong id="partOfSpeechDisplay">?</strong>
+              </div>
+              <div class="display-box">
                 <span class="display-label">Meaning</span>
                 <strong id="meaningDisplay">?</strong>
+              </div>
+              <div class="display-box sentence-box">
+                <span class="display-label">Sample Sentence</span>
+                <strong id="sampleSentenceDisplay">?</strong>
               </div>
             </div>
           </div>
@@ -111,19 +129,24 @@
           <div class="answer-card">
             <div class="section-title compact">
               <h3>4. Answer Area</h3>
-              <p>Choose the student response for the current word.</p>
+              <p>Use tap or keyboard to answer quickly.</p>
             </div>
 
             <div class="answer-buttons">
-              <button class="answer-btn know" type="button" data-answer="know" disabled>I know it</button>
-              <button class="answer-btn unsure" type="button" data-answer="not_sure" disabled>Not sure</button>
-              <button class="answer-btn dont-know" type="button" data-answer="dont_know" disabled>I don't know</button>
+              <button class="answer-btn know" type="button" data-answer="know" disabled>I know it <kbd>1</kbd></button>
+              <button class="answer-btn unsure" type="button" data-answer="not_sure" disabled>Not sure <kbd>2</kbd></button>
+              <button class="answer-btn dont-know" type="button" data-answer="dont_know" disabled>I don't know <kbd>3</kbd></button>
             </div>
 
-            <div id="liveSummary" class="live-summary">
+            <div class="live-summary">
               <div><span>Know</span><strong id="knowCount">0</strong></div>
               <div><span>Not Sure</span><strong id="notSureCount">0</strong></div>
               <div><span>Don't Know</span><strong id="dontKnowCount">0</strong></div>
+            </div>
+
+            <div class="shortcut-card">
+              <span class="status-label">Keyboard Shortcuts</span>
+              <p><kbd>P</kbd> pronounce, <kbd>W</kbd> word, <kbd>M</kbd> meaning, <kbd>1</kbd> know, <kbd>2</kbd> not sure, <kbd>3</kbd> don't know</p>
             </div>
           </div>
         </div>
@@ -132,7 +155,7 @@
       <section class="panel">
         <div class="section-title">
           <h2>5. Review Test Records</h2>
-          <p>Each test is stored by username and incremental test number in this browser.</p>
+          <p>Each finished test can restart the full pool or retest only missed and unsure words.</p>
         </div>
         <div id="historyList" class="history-list"></div>
       </section>
@@ -149,6 +172,7 @@
         <button class="toggle-btn" type="button">Show Details</button>
       </div>
       <div class="history-stats"></div>
+      <div class="history-actions"></div>
       <div class="history-details hidden"></div>
     </article>
   </template>
